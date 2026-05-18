@@ -1,18 +1,25 @@
-import globals from "globals";
-import tseslint from "typescript-eslint";
-import pluginReact from "eslint-plugin-react";
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+import pluginReact from 'eslint-plugin-react';
+import pluginPrettier from 'eslint-plugin-prettier';
 
 export default [
   // 1. 基础配置
   {
-    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
+    files: ['**/*.{ts,tsx,js,jsx}'],
     languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
       globals: globals.browser,
-      ecmaVersion: "latest",
-      sourceType: "module",
+    },
+    plugins: {
+      prettier: pluginPrettier,
+    },
+    rules: {
+      'prettier/prettier': 'error', // 强制 Prettier 格式化
     },
     settings: {
-      react: { version: "detect" },
+      react: { version: 'detect' },
     },
   },
 

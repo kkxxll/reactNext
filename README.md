@@ -7,6 +7,6 @@
 - `npm run build`
 - `npm run eject`
 
-
-
 ###### 配置自定义eslint
+
+###### 配置prettier
