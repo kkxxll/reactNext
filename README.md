@@ -7,6 +7,10 @@
 - `npm run build`
 - `npm run eject`
 
-###### 配置自定义eslint
-###### 配置prettier
-###### 配置husky
+###### 配置自定义 eslint
+###### 配置 prettier
+###### 配置husky（校验eslint/prettier）
+###### 配置commit lint
+
+###### classnames
+###### css Module
