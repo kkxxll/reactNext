@@ -13,4 +13,4 @@
 ###### 配置commit lint
 
 ###### classnames
-###### css Module
+###### css Module(必须xxxx.module.css命名)
