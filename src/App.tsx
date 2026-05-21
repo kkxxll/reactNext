@@ -1,19 +1,9 @@
-import classNames from 'classnames'
+import { RouterProvider } from 'react-router-dom';
+import router from './router';
 import './App.css';
-import styles from './app.module.scss'
 
 function App() {
-  return (
-    <div className="App">
-      <header className={styles.box}>
-        <p className={classNames('btn', {
-          'btn-active': true
-        })}>
-          123
-        </p>
-      </header>
-    </div>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
