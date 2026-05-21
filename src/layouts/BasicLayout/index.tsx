@@ -28,8 +28,8 @@ function BasicLayout() {
   } = theme.useToken();
 
   const selectedKeys = useMemo(() => {
-    const match = menuItems?.find((item) =>
-      item && location.pathname.startsWith(item.key as string),
+    const match = menuItems?.find(
+      (item) => item && location.pathname.startsWith(item.key as string),
     );
     return match ? [match.key as string] : ['/dashboard'];
   }, [location.pathname]);
@@ -48,20 +48,12 @@ function BasicLayout() {
   ];
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout className="min-h-screen">
       <Sider trigger={null} collapsible collapsed={collapsed} theme="dark">
         <div
-          style={{
-            height: 56,
-            margin: 0,
-            color: '#fff',
-            fontWeight: 600,
-            fontSize: collapsed ? 14 : 16,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'rgba(255,255,255,0.04)',
-          }}
+          className={`flex items-center justify-center h-14 font-semibold text-white bg-white/5 ${
+            collapsed ? 'text-sm' : 'text-base'
+          }`}
         >
           {collapsed ? '后台' : '后台管理系统'}
         </div>
@@ -75,36 +67,25 @@ function BasicLayout() {
       </Sider>
       <Layout>
         <Header
-          style={{
-            padding: '0 16px',
-            background: colorBgContainer,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderBottom: '1px solid #f0f0f0',
-          }}
+          className="flex items-center justify-between px-4 border-b border-gray-100"
+          style={{ background: colorBgContainer }}
         >
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
-            style={{ fontSize: 16, width: 48, height: 48 }}
+            className="!w-12 !h-12 !text-base"
           />
           <Dropdown menu={{ items: userMenu }} placement="bottomRight" trigger={['click']}>
-            <div style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', gap: 8 }}>
+            <div className="flex items-center gap-2 cursor-pointer hover:text-primary">
               <Avatar size="small" icon={<UserOutlined />} />
               <span>Admin</span>
             </div>
           </Dropdown>
         </Header>
         <Content
-          style={{
-            margin: 16,
-            padding: 24,
-            minHeight: 280,
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
-          }}
+          className="m-4 p-6 min-h-[280px]"
+          style={{ background: colorBgContainer, borderRadius: borderRadiusLG }}
         >
           <Outlet />
         </Content>
