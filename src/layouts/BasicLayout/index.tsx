@@ -6,6 +6,7 @@ import {
   DashboardOutlined,
   UserOutlined,
   SettingOutlined,
+  FormOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   LogoutOutlined,
@@ -16,6 +17,7 @@ const { Header, Sider, Content } = Layout;
 const menuItems: MenuProps['items'] = [
   { key: '/dashboard', icon: <DashboardOutlined />, label: '仪表盘' },
   { key: '/users', icon: <UserOutlined />, label: '用户管理' },
+  { key: '/questionnaire', icon: <FormOutlined />, label: '问卷管理' },
   { key: '/settings', icon: <SettingOutlined />, label: '系统设置' },
 ];
 
