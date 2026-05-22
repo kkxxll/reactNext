@@ -2,7 +2,11 @@
  * 问卷服务层
  *
  * 业务页面统一通过此文件调用问卷相关接口。
- * 当前实现指向 mock，后续接入真实后端时只需在此处切换实现即可。
+ *
+ * 是否启用 mock 由环境变量 REACT_APP_USE_MOCK 控制：
+ *   - 开发环境（.env.development）默认 true → 走 mockjs
+ *   - 测试 / 生产环境（.env.test / .env.production）默认 false → 走真实接口
+ *   - 也可在本地 .env.development.local 中临时覆盖
  */
 import { mockApi } from '../mocks/questionnaire';
 import type {
@@ -12,7 +16,16 @@ import type {
   QuestionnaireStatus,
 } from '../mocks/questionnaire';
 
-const useMock = process.env.REACT_APP_USE_MOCK !== 'false';
+// 仅当显式为 'true' 时启用 mock，避免误开
+const useMock = process.env.REACT_APP_USE_MOCK === 'true';
+
+if (process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line no-console
+  console.info(
+    `[questionnaire] API mode: ${useMock ? 'MOCK (mockjs)' : 'REAL'} ` +
+      `(REACT_APP_USE_MOCK=${process.env.REACT_APP_USE_MOCK ?? 'undefined'})`,
+  );
+}
 
 // 真实接口预留（示例占位，未启用时不会执行）
 const realApi = {
