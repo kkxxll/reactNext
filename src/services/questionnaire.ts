@@ -36,10 +36,9 @@ interface ApiResponse<T> {
 }
 
 async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  if (!apiBase) {
-    throw new Error('REACT_APP_API_BASE_URL 未配置，无法调用真实接口');
-  }
-  const res = await fetch(`${apiBase}${path}`, {
+  // 未配置 BASE_URL 时使用相对路径，交由 craco devServer.proxy 转发到后端
+  const url = `${apiBase}${path}`;
+  const res = await fetch(url, {
     headers: { 'Content-Type': 'application/json', ...(init.headers ?? {}) },
     ...init,
   });
