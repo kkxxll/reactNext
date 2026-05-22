@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Button,
   Form,
@@ -13,18 +13,18 @@ import {
   message,
 } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-
-type QuestionnaireStatus = 'draft' | 'published' | 'closed';
-
-interface Questionnaire {
-  id: string;
-  title: string;
-  description?: string;
-  questionCount: number;
-  status: QuestionnaireStatus;
-  createdAt: string;
-}
+import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  createQuestionnaire,
+  fetchQuestionnaires,
+  removeQuestionnaire,
+  updateQuestionnaire,
+} from '../../services/questionnaire';
+import type {
+  Questionnaire as QuestionnaireItem,
+  QuestionnaireInput,
+  QuestionnaireStatus,
+} from '../../services/questionnaire';
 
 const statusMap: Record<QuestionnaireStatus, { color: string; label: string }> = {
   draft: { color: 'default', label: '草稿' },
@@ -32,56 +32,35 @@ const statusMap: Record<QuestionnaireStatus, { color: string; label: string }> =
   closed: { color: 'red', label: '已关闭' },
 };
 
-const initialData: Questionnaire[] = [
-  {
-    id: '1',
-    title: '前端开发体验调研',
-    description: '收集团队对当前前端开发体验的反馈',
-    questionCount: 10,
-    status: 'published',
-    createdAt: '2025-05-01 10:00:00',
-  },
-  {
-    id: '2',
-    title: '员工满意度问卷',
-    description: '季度员工满意度调研',
-    questionCount: 15,
-    status: 'draft',
-    createdAt: '2025-05-10 14:20:00',
-  },
-  {
-    id: '3',
-    title: '产品功能优先级投票',
-    description: '收集用户对下季度功能的期望',
-    questionCount: 6,
-    status: 'closed',
-    createdAt: '2025-04-20 09:30:00',
-  },
-];
-
-function formatDateTime(date: Date): string {
-  const pad = (n: number) => String(n).padStart(2, '0');
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(
-    date.getHours(),
-  )}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
-}
-
 function Questionnaire() {
-  const [dataSource, setDataSource] = useState<Questionnaire[]>(initialData);
+  const [dataSource, setDataSource] = useState<QuestionnaireItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<QuestionnaireStatus | 'all'>('all');
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<Questionnaire | null>(null);
-  const [form] = Form.useForm<Omit<Questionnaire, 'id' | 'createdAt'>>();
+  const [editing, setEditing] = useState<QuestionnaireItem | null>(null);
+  const [form] = Form.useForm<QuestionnaireInput>();
 
-  const filteredData = useMemo(() => {
-    return dataSource.filter((item) => {
-      const matchKeyword = keyword.trim() === '' || item.title.includes(keyword.trim());
-      const matchStatus = statusFilter === 'all' || item.status === statusFilter;
-      return matchKeyword && matchStatus;
-    });
-  }, [dataSource, keyword, statusFilter]);
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const list = await fetchQuestionnaires({ keyword, status: statusFilter });
+      setDataSource(list);
+    } catch (e) {
+      message.error((e as Error).message || '加载失败');
+    } finally {
+      setLoading(false);
+    }
+  }, [keyword, statusFilter]);
+
+  // 关键词输入做 300ms 防抖；状态变化立即触发
+  useEffect(() => {
+    const timer = setTimeout(loadData, 300);
+    return () => clearTimeout(timer);
+  }, [loadData]);
 
   const openCreateModal = () => {
     setEditing(null);
@@ -90,7 +69,7 @@ function Questionnaire() {
     setModalOpen(true);
   };
 
-  const openEditModal = (record: Questionnaire) => {
+  const openEditModal = (record: QuestionnaireItem) => {
     setEditing(record);
     form.setFieldsValue({
       title: record.title,
@@ -101,35 +80,40 @@ function Questionnaire() {
     setModalOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    setDataSource((prev) => prev.filter((item) => item.id !== id));
-    message.success('删除成功');
+  const handleDelete = async (id: string) => {
+    try {
+      await removeQuestionnaire(id);
+      message.success('删除成功');
+      loadData();
+    } catch (e) {
+      message.error((e as Error).message || '删除失败');
+    }
   };
 
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+      setSubmitting(true);
       if (editing) {
-        setDataSource((prev) =>
-          prev.map((item) => (item.id === editing.id ? { ...item, ...values } : item)),
-        );
+        await updateQuestionnaire(editing.id, values);
         message.success('更新成功');
       } else {
-        const newItem: Questionnaire = {
-          id: Date.now().toString(),
-          createdAt: formatDateTime(new Date()),
-          ...values,
-        };
-        setDataSource((prev) => [newItem, ...prev]);
+        await createQuestionnaire(values);
         message.success('创建成功');
       }
       setModalOpen(false);
-    } catch {
-      // 校验失败由 antd 自行展示
+      loadData();
+    } catch (e) {
+      if (e instanceof Error) {
+        message.error(e.message);
+      }
+      // 表单校验错误由 antd 自行展示
+    } finally {
+      setSubmitting(false);
     }
   };
 
-  const columns: ColumnsType<Questionnaire> = [
+  const columns: ColumnsType<QuestionnaireItem> = [
     {
       title: '问卷标题',
       dataIndex: 'title',
@@ -197,9 +181,14 @@ function Questionnaire() {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h2 className="m-0 text-lg font-semibold">问卷管理</h2>
-        <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
-          新建问卷
-        </Button>
+        <Space>
+          <Button icon={<ReloadOutlined />} onClick={loadData} loading={loading}>
+            刷新
+          </Button>
+          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
+            新建问卷
+          </Button>
+        </Space>
       </div>
 
       <Space className="mb-4" wrap>
@@ -224,10 +213,11 @@ function Questionnaire() {
         />
       </Space>
 
-      <Table<Questionnaire>
+      <Table<QuestionnaireItem>
         rowKey="id"
         columns={columns}
-        dataSource={filteredData}
+        dataSource={dataSource}
+        loading={loading}
         pagination={{ pageSize: 8, showSizeChanger: false }}
         scroll={{ x: 900 }}
       />
@@ -237,6 +227,7 @@ function Questionnaire() {
         open={modalOpen}
         onCancel={() => setModalOpen(false)}
         onOk={handleSubmit}
+        confirmLoading={submitting}
         okText="确定"
         cancelText="取消"
         destroyOnClose
