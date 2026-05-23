@@ -71,6 +71,7 @@ function Questionnaire() {
 
   const openEditModal = (record: QuestionnaireItem) => {
     setEditing(record);
+    form.resetFields();
     form.setFieldsValue({
       title: record.title,
       description: record.description,
@@ -78,6 +79,12 @@ function Questionnaire() {
       status: record.status,
     });
     setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setEditing(null);
+    form.resetFields();
   };
 
   const handleDelete = async (id: string) => {
@@ -225,14 +232,14 @@ function Questionnaire() {
       <Modal
         title={editing ? '编辑问卷' : '新建问卷'}
         open={modalOpen}
-        onCancel={() => setModalOpen(false)}
+        onCancel={handleCloseModal}
         onOk={handleSubmit}
         confirmLoading={submitting}
         okText="确定"
         cancelText="取消"
-        destroyOnClose
+        forceRender
       >
-        <Form form={form} layout="vertical" preserve={false}>
+        <Form form={form} layout="vertical">
           <Form.Item
             label="问卷标题"
             name="title"

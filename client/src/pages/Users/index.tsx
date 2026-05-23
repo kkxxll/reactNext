@@ -66,6 +66,7 @@ function Users() {
 
   const openEditModal = (record: User) => {
     setEditing(record);
+    form.resetFields();
     form.setFieldsValue({
       name: record.name,
       email: record.email,
@@ -74,6 +75,12 @@ function Users() {
       status: record.status,
     });
     setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setEditing(null);
+    form.resetFields();
   };
 
   const handleDelete = async (id: string) => {
@@ -239,14 +246,14 @@ function Users() {
       <Modal
         title={editing ? '编辑用户' : '新建用户'}
         open={modalOpen}
-        onCancel={() => setModalOpen(false)}
+        onCancel={handleCloseModal}
         onOk={handleSubmit}
         confirmLoading={submitting}
         okText="确定"
         cancelText="取消"
-        destroyOnClose
+        forceRender
       >
-        <Form form={form} layout="vertical" preserve={false}>
+        <Form form={form} layout="vertical">
           <Form.Item
             label="姓名"
             name="name"
