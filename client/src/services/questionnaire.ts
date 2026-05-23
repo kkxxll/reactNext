@@ -8,6 +8,8 @@
  *   - 测试 / 生产环境（.env.test / .env.production）默认 false → 走真实接口
  *   - 也可在本地 .env.development.local 中临时覆盖
  */
+import http from '../utils/request';
+import type { ApiResponse } from '../utils/request';
 import { mockApi } from '../mocks/questionnaire';
 import type {
   Questionnaire,
@@ -18,68 +20,36 @@ import type {
 
 // 仅当显式为 'true' 时启用 mock，避免误开
 const useMock = process.env.REACT_APP_USE_MOCK === 'true';
-const apiBase = (process.env.REACT_APP_API_BASE_URL ?? '').replace(/\/$/, '');
 
 if (process.env.NODE_ENV !== 'production') {
   // eslint-disable-next-line no-console
   console.info(
-    `[questionnaire] API mode: ${useMock ? 'MOCK (mockjs)' : `REAL (${apiBase || '<base url not set>'})`} ` +
+    `[questionnaire] API mode: ${useMock ? 'MOCK (mockjs)' : 'REAL (axios)'} ` +
       `(REACT_APP_USE_MOCK=${process.env.REACT_APP_USE_MOCK ?? 'undefined'})`,
   );
 }
 
-// 后端统一响应结构：{ code, data, message }
-interface ApiResponse<T> {
-  code: number;
-  data: T;
-  message: string;
-}
-
-async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
-  // 未配置 BASE_URL 时使用相对路径，交由 craco devServer.proxy 转发到后端
-  const url = `${apiBase}${path}`;
-  const res = await fetch(url, {
-    headers: { 'Content-Type': 'application/json', ...(init.headers ?? {}) },
-    ...init,
-  });
-  let payload: ApiResponse<T> | null = null;
-  try {
-    payload = (await res.json()) as ApiResponse<T>;
-  } catch {
-    // ignore parse error
-  }
-  if (!res.ok || !payload || payload.code !== 0) {
-    throw new Error(payload?.message || `请求失败 (${res.status})`);
-  }
-  return payload.data;
-}
-
-const buildQuery = (params: QueryParams): string => {
-  const usp = new URLSearchParams();
-  if (params.keyword) usp.set('keyword', params.keyword);
-  if (params.status && params.status !== 'all') usp.set('status', params.status);
-  const qs = usp.toString();
-  return qs ? `?${qs}` : '';
-};
-
-// 真实接口实现（对接 server/ 中的 Koa 服务）
+// 真实接口实现（基于 axios 拦截器，自动处理 token、错误提示）
 const realApi = {
-  list: (params: QueryParams) =>
-    request<Questionnaire[]>(`/api/questionnaires${buildQuery(params)}`),
-  create: (input: QuestionnaireInput) =>
-    request<Questionnaire>('/api/questionnaires', {
-      method: 'POST',
-      body: JSON.stringify(input),
-    }),
-  update: (id: string, input: QuestionnaireInput) =>
-    request<Questionnaire>(`/api/questionnaires/${id}`, {
-      method: 'PUT',
-      body: JSON.stringify(input),
-    }),
-  remove: (id: string) =>
-    request<{ success: true }>(`/api/questionnaires/${id}`, {
-      method: 'DELETE',
-    }),
+  list: async (params: QueryParams): Promise<Questionnaire[]> => {
+    const res = await http.get<ApiResponse<Questionnaire[]>>('/api/questionnaires', { params });
+    return res.data.data;
+  },
+
+  create: async (input: QuestionnaireInput): Promise<Questionnaire> => {
+    const res = await http.post<ApiResponse<Questionnaire>>('/api/questionnaires', input);
+    return res.data.data;
+  },
+
+  update: async (id: string, input: QuestionnaireInput): Promise<Questionnaire> => {
+    const res = await http.put<ApiResponse<Questionnaire>>(`/api/questionnaires/${id}`, input);
+    return res.data.data;
+  },
+
+  remove: async (id: string): Promise<{ success: true }> => {
+    const res = await http.delete<ApiResponse<{ success: true }>>(`/api/questionnaires/${id}`);
+    return res.data.data;
+  },
 };
 
 const api = useMock ? mockApi : realApi;
