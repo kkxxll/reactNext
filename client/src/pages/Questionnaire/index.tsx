@@ -104,10 +104,13 @@ function Questionnaire() {
     {
       title: '操作',
       key: 'action',
-      width: 160,
+      width: 220,
       fixed: 'right',
       render: (_, record) => (
         <Space size="small">
+          <Button type="link" onClick={() => navigate(`/questionnaire/submissions/${record.id}`)}>
+            提交
+          </Button>
           <Button type="link" onClick={() => navigate(`/questionnaire/edit/${record.id}`)}>
             编辑
           </Button>

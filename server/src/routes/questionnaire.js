@@ -4,7 +4,7 @@
  * 统一返回结构：{ code: 0, data, message } 成功；{ code !== 0, message } 失败。
  */
 const Router = require('@koa/router');
-const { store } = require('../store');
+const { store, submissionStore } = require('../store');
 
 const router = new Router({ prefix: '/api/questionnaires' });
 
@@ -15,6 +15,19 @@ const fail = (message, code = 1) => ({ code, data: null, message });
 router.get('/', (ctx) => {
   const { keyword, status } = ctx.query;
   const list = store.list({ keyword, status });
+  ctx.body = ok(list);
+});
+
+// 查看问卷提交记录（放在 /:id 前避免路由冲突）
+router.get('/:id/submissions', (ctx) => {
+  const { id } = ctx.params;
+  const questionnaire = store.getById(id);
+  if (questionnaire.error) {
+    ctx.status = 404;
+    ctx.body = fail(questionnaire.error);
+    return;
+  }
+  const list = submissionStore.listByQuestionnaire(id);
   ctx.body = ok(list);
 });
 

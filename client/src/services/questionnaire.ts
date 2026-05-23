@@ -75,4 +75,19 @@ export const updateQuestionnaire = (
 
 export const removeQuestionnaire = (id: string): Promise<{ success: true }> => api.remove(id);
 
+// ------------------- 提交记录 -------------------
+
+export interface Submission {
+  id: string;
+  questionnaireId: string;
+  answers: string[];
+  submittedAt: string;
+}
+
+/** 获取某份问卷的所有提交记录 */
+export const fetchSubmissions = async (questionnaireId: string): Promise<Submission[]> => {
+  const res = await http.get<ApiResponse<Submission[]>>(`/api/questionnaires/${questionnaireId}/submissions`);
+  return res.data.data;
+};
+
 export type { Questionnaire, QuestionnaireInput, QueryParams, QuestionnaireStatus };

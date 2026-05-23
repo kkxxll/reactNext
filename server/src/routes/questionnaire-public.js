@@ -17,6 +17,21 @@ router.get('/', (ctx) => {
   ctx.body = ok(list);
 });
 
+// 提交问卷答案（放在 /:id 前避免路由冲突）
+router.post('/:id/submit', (ctx) => {
+  const { id } = ctx.params;
+  const { answers } = /** @type {{ answers: string[] }} */ (ctx.request.body);
+
+  const result = submissionStore.submit(id, answers);
+  if (result.error) {
+    ctx.status = result.notFound ? 404 : 400;
+    ctx.body = fail(result.error);
+    return;
+  }
+  ctx.status = 201;
+  ctx.body = ok(result.data);
+});
+
 // 问卷详情
 router.get('/:id', (ctx) => {
   const { id } = ctx.params;
@@ -32,21 +47,6 @@ router.get('/:id', (ctx) => {
     ctx.body = fail('问卷不存在或未发布');
     return;
   }
-  ctx.body = ok(result.data);
-});
-
-// 提交问卷答案
-router.post('/:id/submit', (ctx) => {
-  const { id } = ctx.params;
-  const { answers } = /** @type {{ answers: string[] }} */ (ctx.request.body);
-
-  const result = submissionStore.submit(id, answers);
-  if (result.error) {
-    ctx.status = result.notFound ? 404 : 400;
-    ctx.body = fail(result.error);
-    return;
-  }
-  ctx.status = 201;
   ctx.body = ok(result.data);
 });
 

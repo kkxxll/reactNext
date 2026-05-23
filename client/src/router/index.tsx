@@ -5,6 +5,7 @@ import Dashboard from '../pages/Dashboard';
 import Users from '../pages/Users';
 import Questionnaire from '../pages/Questionnaire';
 import QuestionnaireEdit from '../pages/Questionnaire/Edit';
+import QuestionnaireSubmissions from '../pages/Questionnaire/Submissions';
 import Settings from '../pages/Settings';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       { path: 'questionnaire', element: <Questionnaire /> },
       { path: 'questionnaire/create', element: <QuestionnaireEdit /> },
       { path: 'questionnaire/edit/:id', element: <QuestionnaireEdit /> },
+      { path: 'questionnaire/submissions/:id', element: <QuestionnaireSubmissions /> },
       { path: 'settings', element: <Settings /> },
     ],
   },
