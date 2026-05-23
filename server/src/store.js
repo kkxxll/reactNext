@@ -62,6 +62,12 @@ const validateInput = (input) => {
 };
 
 const store = {
+  getById(id) {
+    const item = db.find((it) => it.id === id);
+    if (!item) return { error: '问卷不存在', notFound: true };
+    return { data: item };
+  },
+
   list({ keyword = '', status = 'all' } = {}) {
     const kw = String(keyword).trim();
     return db.filter((item) => {

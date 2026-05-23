@@ -18,6 +18,18 @@ router.get('/', (ctx) => {
   ctx.body = ok(list);
 });
 
+// 详情
+router.get('/:id', (ctx) => {
+  const { id } = ctx.params;
+  const result = store.getById(id);
+  if (result.error) {
+    ctx.status = 404;
+    ctx.body = fail(result.error);
+    return;
+  }
+  ctx.body = ok(result.data);
+});
+
 // 新建
 router.post('/', (ctx) => {
   const { error, data } = store.create(ctx.request.body);

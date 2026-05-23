@@ -31,6 +31,11 @@ if (process.env.NODE_ENV !== 'production') {
 
 // 真实接口实现（基于 axios 拦截器，自动处理 token、错误提示）
 const realApi = {
+  getById: async (id: string): Promise<Questionnaire> => {
+    const res = await http.get<ApiResponse<Questionnaire>>(`/api/questionnaires/${id}`);
+    return res.data.data;
+  },
+
   list: async (params: QueryParams): Promise<Questionnaire[]> => {
     const res = await http.get<ApiResponse<Questionnaire[]>>('/api/questionnaires', { params });
     return res.data.data;
@@ -53,6 +58,9 @@ const realApi = {
 };
 
 const api = useMock ? mockApi : realApi;
+
+export const fetchQuestionnaireById = (id: string): Promise<Questionnaire> =>
+  api.getById(id);
 
 export const fetchQuestionnaires = (params?: QueryParams): Promise<Questionnaire[]> =>
   api.list(params ?? {});

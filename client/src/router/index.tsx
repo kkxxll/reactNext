@@ -4,6 +4,7 @@ import RequireAuth from '../components/RequireAuth';
 import Dashboard from '../pages/Dashboard';
 import Users from '../pages/Users';
 import Questionnaire from '../pages/Questionnaire';
+import QuestionnaireEdit from '../pages/Questionnaire/Edit';
 import Settings from '../pages/Settings';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
@@ -22,6 +23,8 @@ const router = createBrowserRouter([
       { path: 'dashboard', element: <Dashboard /> },
       { path: 'users', element: <Users /> },
       { path: 'questionnaire', element: <Questionnaire /> },
+      { path: 'questionnaire/create', element: <QuestionnaireEdit /> },
+      { path: 'questionnaire/edit/:id', element: <QuestionnaireEdit /> },
       { path: 'settings', element: <Settings /> },
     ],
   },

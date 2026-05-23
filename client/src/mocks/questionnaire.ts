@@ -61,6 +61,15 @@ const delay = <T>(data: T, ms = 300): Promise<T> =>
 // ------------------- Mock 接口 -------------------
 
 export const mockApi = {
+  /** 获取单个问卷详情 */
+  getById(id: string): Promise<Questionnaire> {
+    const item = db.find((q) => q.id === id);
+    if (!item) {
+      return Promise.reject(new Error('问卷不存在'));
+    }
+    return delay({ ...item });
+  },
+
   /** 列表查询（支持关键词与状态筛选） */
   list(params: QueryParams = {}): Promise<Questionnaire[]> {
     const { keyword = '', status = 'all' } = params;

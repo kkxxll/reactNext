@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
-  Form,
   Input,
-  InputNumber,
-  Modal,
   Popconfirm,
   Select,
   Space,
@@ -15,14 +13,11 @@ import {
 import type { ColumnsType } from 'antd/es/table';
 import { PlusOutlined, ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import {
-  createQuestionnaire,
   fetchQuestionnaires,
   removeQuestionnaire,
-  updateQuestionnaire,
 } from '../../services/questionnaire';
 import type {
   Questionnaire as QuestionnaireItem,
-  QuestionnaireInput,
   QuestionnaireStatus,
 } from '../../services/questionnaire';
 
@@ -33,16 +28,12 @@ const statusMap: Record<QuestionnaireStatus, { color: string; label: string }> =
 };
 
 function Questionnaire() {
+  const navigate = useNavigate();
   const [dataSource, setDataSource] = useState<QuestionnaireItem[]>([]);
   const [loading, setLoading] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
 
   const [keyword, setKeyword] = useState('');
   const [statusFilter, setStatusFilter] = useState<QuestionnaireStatus | 'all'>('all');
-
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editing, setEditing] = useState<QuestionnaireItem | null>(null);
-  const [form] = Form.useForm<QuestionnaireInput>();
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -62,31 +53,6 @@ function Questionnaire() {
     return () => clearTimeout(timer);
   }, [loadData]);
 
-  const openCreateModal = () => {
-    setEditing(null);
-    form.resetFields();
-    form.setFieldsValue({ status: 'draft', questionCount: 1 });
-    setModalOpen(true);
-  };
-
-  const openEditModal = (record: QuestionnaireItem) => {
-    setEditing(record);
-    form.resetFields();
-    form.setFieldsValue({
-      title: record.title,
-      description: record.description,
-      questionCount: record.questionCount,
-      status: record.status,
-    });
-    setModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setModalOpen(false);
-    setEditing(null);
-    form.resetFields();
-  };
-
   const handleDelete = async (id: string) => {
     try {
       await removeQuestionnaire(id);
@@ -94,29 +60,6 @@ function Questionnaire() {
       loadData();
     } catch (e) {
       message.error((e as Error).message || '删除失败');
-    }
-  };
-
-  const handleSubmit = async () => {
-    try {
-      const values = await form.validateFields();
-      setSubmitting(true);
-      if (editing) {
-        await updateQuestionnaire(editing.id, values);
-        message.success('更新成功');
-      } else {
-        await createQuestionnaire(values);
-        message.success('创建成功');
-      }
-      setModalOpen(false);
-      loadData();
-    } catch (e) {
-      if (e instanceof Error) {
-        message.error(e.message);
-      }
-      // 表单校验错误由 antd 自行展示
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -165,7 +108,7 @@ function Questionnaire() {
       fixed: 'right',
       render: (_, record) => (
         <Space size="small">
-          <Button type="link" onClick={() => openEditModal(record)}>
+          <Button type="link" onClick={() => navigate(`/questionnaire/edit/${record.id}`)}>
             编辑
           </Button>
           <Popconfirm
@@ -192,7 +135,11 @@ function Questionnaire() {
           <Button icon={<ReloadOutlined />} onClick={loadData} loading={loading}>
             刷新
           </Button>
-          <Button type="primary" icon={<PlusOutlined />} onClick={openCreateModal}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => navigate('/questionnaire/create')}
+          >
             新建问卷
           </Button>
         </Space>
@@ -228,53 +175,6 @@ function Questionnaire() {
         pagination={{ pageSize: 8, showSizeChanger: false }}
         scroll={{ x: 900 }}
       />
-
-      <Modal
-        title={editing ? '编辑问卷' : '新建问卷'}
-        open={modalOpen}
-        onCancel={handleCloseModal}
-        onOk={handleSubmit}
-        confirmLoading={submitting}
-        okText="确定"
-        cancelText="取消"
-        forceRender
-      >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            label="问卷标题"
-            name="title"
-            rules={[
-              { required: true, message: '请输入问卷标题' },
-              { max: 50, message: '标题最多 50 个字符' },
-            ]}
-          >
-            <Input placeholder="请输入问卷标题" />
-          </Form.Item>
-          <Form.Item label="问卷描述" name="description" rules={[{ max: 200 }]}>
-            <Input.TextArea rows={3} placeholder="请输入问卷描述（可选）" />
-          </Form.Item>
-          <Form.Item
-            label="题目数量"
-            name="questionCount"
-            rules={[{ required: true, message: '请输入题目数量' }]}
-          >
-            <InputNumber min={1} max={100} className="!w-full" />
-          </Form.Item>
-          <Form.Item
-            label="状态"
-            name="status"
-            rules={[{ required: true, message: '请选择状态' }]}
-          >
-            <Select
-              options={[
-                { value: 'draft', label: '草稿' },
-                { value: 'published', label: '已发布' },
-                { value: 'closed', label: '已关闭' },
-              ]}
-            />
-          </Form.Item>
-        </Form>
-      </Modal>
     </div>
   );
 }
