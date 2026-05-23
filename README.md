@@ -17,6 +17,7 @@
 ###### sass
 ###### 路由
 ###### tailwindcss
+###### test pre-commit
 
 
 # 终端 1：启动后端
