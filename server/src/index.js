@@ -15,6 +15,7 @@ const bodyParser = require('koa-bodyparser');
 const Router = require('@koa/router');
 
 const questionnaireRouter = require('./routes/questionnaire');
+const questionnairePublicRouter = require('./routes/questionnaire-public');
 const userRouter = require('./routes/user');
 const authRouter = require('./routes/auth');
 const { jwtAuth } = require('./middleware/auth');
@@ -59,6 +60,9 @@ app.use(rootRouter.routes()).use(rootRouter.allowedMethods());
 
 // 认证路由（无需 token）
 app.use(authRouter.routes()).use(authRouter.allowedMethods());
+
+// C 端公开接口（无需 token）
+app.use(questionnairePublicRouter.routes()).use(questionnairePublicRouter.allowedMethods());
 
 // 以下业务路由需要 JWT 验证
 app.use(jwtAuth);

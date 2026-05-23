@@ -116,4 +116,29 @@ const store = {
   },
 };
 
-module.exports = { store };
+// ------------------- 答卷存储 -------------------
+let submissions = [];
+
+const submissionStore = {
+  submit(questionnaireId, answers) {
+    const questionnaire = db.find((it) => it.id === questionnaireId);
+    if (!questionnaire) return { error: '问卷不存在', notFound: true };
+    if (questionnaire.status !== 'published') return { error: '该问卷未发布，无法填写' };
+    if (!Array.isArray(answers) || answers.length === 0) return { error: '答案不能为空' };
+
+    const record = {
+      id: `${Date.now()}${Math.floor(Math.random() * 1000)}`,
+      questionnaireId,
+      answers,
+      submittedAt: formatDateTime(new Date()),
+    };
+    submissions = [record, ...submissions];
+    return { data: record };
+  },
+
+  listByQuestionnaire(questionnaireId) {
+    return submissions.filter((s) => s.questionnaireId === questionnaireId);
+  },
+};
+
+module.exports = { store, submissionStore };

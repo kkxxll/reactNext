@@ -27,3 +27,7 @@ npm run dev
 # 终端 2：启动前端（默认仍为 mock 模式）
 cd ..
 npm start
+
+
+# C 端：
+cd web && npm run dev（端口 3000）
