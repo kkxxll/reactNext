@@ -16,6 +16,8 @@ const Router = require('@koa/router');
 
 const questionnaireRouter = require('./routes/questionnaire');
 const userRouter = require('./routes/user');
+const authRouter = require('./routes/auth');
+const { jwtAuth } = require('./middleware/auth');
 
 const PORT = Number(process.env.PORT) || 3001;
 const app = new Koa();
@@ -54,6 +56,12 @@ rootRouter.get('/health', (ctx) => {
 });
 
 app.use(rootRouter.routes()).use(rootRouter.allowedMethods());
+
+// 认证路由（无需 token）
+app.use(authRouter.routes()).use(authRouter.allowedMethods());
+
+// 以下业务路由需要 JWT 验证
+app.use(jwtAuth);
 app.use(questionnaireRouter.routes()).use(questionnaireRouter.allowedMethods());
 app.use(userRouter.routes()).use(userRouter.allowedMethods());
 

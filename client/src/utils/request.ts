@@ -68,8 +68,9 @@ http.interceptors.response.use(
       switch (status) {
         case 401:
           antdMessage.error('登录已过期，请重新登录');
-          // 可选：跳转登录页
-          // window.location.href = '/login';
+          localStorage.removeItem('token');
+          localStorage.removeItem('user');
+          window.location.href = '/login';
           break;
         case 403:
           antdMessage.error(msg || '无权限访问');
