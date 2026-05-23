@@ -6,11 +6,12 @@ import Questionnaire from '../pages/Questionnaire';
 import Settings from '../pages/Settings';
 import Login from '../pages/Login';
 import NotFound from '../pages/NotFound';
-
 const router = createBrowserRouter([
+
   {
     path: '/',
     element: <BasicLayout />,
+    
     children: [
       { index: true, element: <Navigate to="/dashboard" replace /> },
       { path: 'dashboard', element: <Dashboard /> },

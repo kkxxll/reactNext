@@ -2,84 +2,22 @@
   "name": "react-next",
   "version": "0.1.0",
   "private": true,
-  "dependencies": {
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/jest-dom": "^6.9.1",
-    "@testing-library/react": "^16.3.2",
-    "@testing-library/user-event": "^13.5.0",
-    "@ant-design/icons": "^5.5.2",
-    "@types/jest": "^27.5.2",
-    "@types/node": "^16.18.126",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "antd": "^5.21.6",
-    "classnames": "^2.5.1",
-    "mockjs": "^1.1.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "react-router-dom": "^6.30.0",
-    "react-scripts": "5.0.1",
-    "sass": "^1.89.0",
-    "typescript": "^4.9.5",
-    "web-vitals": "^2.1.4"
-  },
+  "description": "Monorepo: client (React CRA + craco) + server (Koa)",
   "scripts": {
-    "start": "craco start",
-    "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
-    "format": "prettier --write src",
-    "postinstall": "husky install",
+    "start:client": "cd client && npm start",
+    "start:server": "cd server && npm start",
+    "dev:client": "cd client && npm start",
+    "dev:server": "cd server && npm run dev",
+    "build": "cd client && npm run build",
+    "test": "cd client && npm test",
+    "lint": "cd client && npm run lint",
+    "lint:fix": "cd client && npm run lint:fix",
+    "install:all": "cd client && npm install --legacy-peer-deps && cd ../server && npm install",
     "prepare": "husky install"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "devDependencies": {
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
-    "@craco/craco": "^7.1.0",
-    "@eslint/js": "^10.0.1",
-    "@types/mockjs": "^1.0.10",
-    "@typescript-eslint/eslint-plugin": "^8.59.3",
-    "@typescript-eslint/parser": "^8.59.3",
-    "eslint": "^8.57.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.5",
-    "eslint-plugin-react": "^7.37.5",
-    "globals": "^17.6.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^17.0.5",
-    "prettier": "^3.8.3",
-    "typescript-eslint": "^7.18.0",
-    "tailwindcss": "^3.4.14",
-    "postcss": "^8.4.47",
-    "autoprefixer": "^10.4.20"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,jsx}": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "*.{json,md,yml}": [
-      "prettier --write"
-    ]
+    "husky": "^9.1.7"
   }
 }
