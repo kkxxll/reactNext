@@ -15,6 +15,7 @@ const bodyParser = require('koa-bodyparser');
 const Router = require('@koa/router');
 
 const questionnaireRouter = require('./routes/questionnaire');
+const userRouter = require('./routes/user');
 
 const PORT = Number(process.env.PORT) || 3001;
 const app = new Koa();
@@ -54,10 +55,13 @@ rootRouter.get('/health', (ctx) => {
 
 app.use(rootRouter.routes()).use(rootRouter.allowedMethods());
 app.use(questionnaireRouter.routes()).use(questionnaireRouter.allowedMethods());
+app.use(userRouter.routes()).use(userRouter.allowedMethods());
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`[server] Koa server listening on http://localhost:${PORT}`);
   // eslint-disable-next-line no-console
   console.log(`[server] Try: curl http://localhost:${PORT}/api/questionnaires`);
+  // eslint-disable-next-line no-console
+  console.log(`[server]      curl http://localhost:${PORT}/api/users`);
 });
