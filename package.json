@@ -9,7 +9,7 @@
     "dev:client": "cd client && npm start",
     "dev:server": "cd server && npm run dev",
     "build": "cd client && npm run build",
-    "test": "cd client && npm test",
+    "test": "cd client && npm test -- --watchAll=false",
     "lint": "cd client && npm run lint",
     "lint:fix": "cd client && npm run lint:fix",
     "install:all": "cd client && npm install --legacy-peer-deps && cd ../server && npm install",
