@@ -2,15 +2,24 @@
 
 <cite>
 **本文档引用的文件**
-- [src/App.tsx](file://src/App.tsx)
-- [src/App.css](file://src/App.css)
-- [src/index.tsx](file://src/index.tsx)
-- [public/index.html](file://public/index.html)
-- [src/index.css](file://src/index.css)
-- [src/reportWebVitals.ts](file://src/reportWebVitals.ts)
+- [client/src/App.tsx](file://client/src/App.tsx)
+- [client/src/App.css](file://client/src/App.css)
+- [client/src/index.tsx](file://client/src/index.tsx)
+- [client/public/index.html](file://client/public/index.html)
+- [client/src/router/index.tsx](file://client/src/router/index.tsx)
+- [client/src/layouts/BasicLayout/index.tsx](file://client/src/layouts/BasicLayout/index.tsx)
+- [client/src/pages/Dashboard/index.tsx](file://client/src/pages/Dashboard/index.tsx)
+- [client/src/reportWebVitals.ts](file://client/src/reportWebVitals.ts)
 - [package.json](file://package.json)
-- [README.md](file://README.md)
 </cite>
+
+## 更新摘要
+**变更内容**
+- 更新应用入口点路径从 `src/App.tsx` 到 `client/src/App.tsx`
+- 重构组件架构以支持现代 React 路由系统
+- 新增完整的后台管理系统结构
+- 集成 Ant Design UI 组件库
+- 添加多页面路由和布局系统
 
 ## 目录
 1. [简介](#简介)
@@ -26,107 +35,143 @@
 
 ## 简介
 
-App 组件是基于 Create React App 模板构建的 React 应用程序的核心入口点组件。该组件展示了 React 的基本概念，包括 JSX 语法、组件结构、样式集成和用户交互元素。作为整个应用程序的根组件，App.tsx 负责渲染应用程序的主要界面布局，包含头部区域、Logo 动画效果和外部链接等关键元素。
+App 组件是基于 Create React App 模板构建的现代化 React 应用程序的核心入口点组件。经过重构后，该组件不再是简单的静态页面，而是演变为一个功能完整的后台管理系统入口，负责管理整个应用的路由和页面渲染。
 
-本组件采用函数式组件模式，使用现代 React 特性如 hooks（虽然当前版本中未使用），并集成了 CSS 样式系统和动画效果。它为开发者提供了一个清晰的起点，展示如何在 React 应用中组织代码结构和样式管理。
+该组件采用函数式组件模式，使用现代 React 特性和 React Router v6 进行页面导航管理。通过引入 Ant Design UI 组件库，App.tsx 为开发者提供了一个功能丰富的企业级应用起点，展示了如何在 React 应用中组织复杂的路由系统、布局管理和组件架构。
 
 ## 项目结构
 
-React Next 项目遵循标准的 Create React App 项目结构，具有清晰的模块化组织：
+React Next 项目现已演进为一个完整的后台管理系统，采用 Monorepo 架构，具有清晰的功能模块化组织：
 
 ```mermaid
 graph TB
 subgraph "项目根目录"
 Root[项目根目录]
-subgraph "源代码目录 (src)"
-AppTSX[src/App.tsx]
-AppCSS[src/App.css]
-IndexTSX[src/index.tsx]
-IndexCSS[src/index.css]
-LogoSVG[src/logo.svg]
-ReportTS[src/reportWebVitals.ts]
+subgraph "客户端应用 (client)"
+Client[client/]
+subgraph "源代码目录 (client/src)"
+AppTSX[client/src/App.tsx]
+AppCSS[client/src/App.css]
+IndexTSX[client/src/index.tsx]
+RouterTSX[client/src/router/index.tsx]
+ReportTS[client/src/reportWebVitals.ts]
+BasicLayout[client/src/layouts/BasicLayout/index.tsx]
+Dashboard[client/src/pages/Dashboard/index.tsx]
+Users[client/src/pages/Users/index.tsx]
+Questionnaire[client/src/pages/Questionnaire/index.tsx]
+Settings[client/src/pages/Settings/index.tsx]
+Login[client/src/pages/Login/index.tsx]
+NotFound[client/src/pages/NotFound/index.tsx]
 end
-subgraph "公共资源目录 (public)"
-IndexHTML[public/index.html]
+subgraph "公共资源目录 (client/public)"
+IndexHTML[client/public/index.html]
 end
 subgraph "配置文件"
 PackageJSON[package.json]
-TSConfig[tsconfig.json]
-ESLint[eslint.config.mjs]
+ClientPackage[client/package.json]
+CracoConfig[client/craco.config.js]
+TailwindConfig[client/tailwind.config.js]
+End
 end
-end
-Root --> AppTSX
-Root --> AppCSS
-Root --> IndexTSX
-Root --> IndexCSS
-Root --> LogoSVG
-Root --> ReportTS
-Root --> IndexHTML
-Root --> PackageJSON
-Root --> TSConfig
-Root --> ESLint
+Root --> Client
+Client --> AppTSX
+Client --> AppCSS
+Client --> IndexTSX
+Client --> RouterTSX
+Client --> ReportTS
+Client --> BasicLayout
+Client --> Dashboard
+Client --> Users
+Client --> Questionnaire
+Client --> Settings
+Client --> Login
+Client --> NotFound
+Client --> IndexHTML
+Client --> PackageJSON
+Client --> CracoConfig
+Client --> TailwindConfig
 ```
 
 **图表来源**
-- [src/App.tsx:1-27](file://src/App.tsx#L1-L27)
-- [src/index.tsx:1-20](file://src/index.tsx#L1-L20)
-- [public/index.html:1-44](file://public/index.html#L1-L44)
+- [client/src/App.tsx:1-10](file://client/src/App.tsx#L1-L10)
+- [client/src/index.tsx:1-18](file://client/src/index.tsx#L1-L18)
+- [client/public/index.html:1-45](file://client/public/index.html#L1-L45)
 
 **章节来源**
-- [package.json:1-55](file://package.json#L1-L55)
-- [README.md:1-15](file://README.md#L1-L15)
+- [package.json:1-24](file://package.json#L1-L24)
 
 ## 核心组件
 
 ### 组件结构概述
 
-App 组件是一个纯函数式组件，采用简洁的 JSX 结构设计：
+App 组件经过重构后，采用了全新的架构模式：
 
 ```mermaid
 classDiagram
 class App {
 +JSX.Element render()
 +React.FC~React.ReactNode~ component
--logo : string
--styles : CSSProperties
+-router : BrowserRouter
+-RouterProvider : RouterProvider
 }
-class Header {
-+className : string
+class RouterProvider {
++router : BrowserRouter
 +children : ReactNode[]
 }
-class Logo {
-+src : string
-+className : string
-+alt : string
-+height : string
+class BasicLayout {
++Layout : Layout
++Sider : Sider
++Header : Header
++Content : Content
++Menu : Menu
++Avatar : Avatar
++Dropdown : Dropdown
 }
-class LinkElement {
-+href : string
-+target : string
-+rel : string
-+className : string
-+children : string
+class Dashboard {
++Dashboard 页面
++数据概览
++统计信息
 }
-App --> Header : "包含"
-Header --> Logo : "包含"
-Header --> LinkElement : "包含"
+class Users {
++用户管理
++用户列表
++用户操作
+}
+class Questionnaire {
++问卷管理
++问卷列表
++问卷编辑
+}
+class Settings {
++系统设置
++配置管理
++权限设置
+}
+App --> RouterProvider : "管理路由"
+RouterProvider --> BasicLayout : "渲染布局"
+BasicLayout --> Dashboard : "默认页面"
+BasicLayout --> Users : "用户管理"
+BasicLayout --> Questionnaire : "问卷管理"
+BasicLayout --> Settings : "系统设置"
 ```
 
 **图表来源**
-- [src/App.tsx:5-26](file://src/App.tsx#L5-L26)
+- [client/src/App.tsx:5-7](file://client/src/App.tsx#L5-L7)
+- [client/src/router/index.tsx:1-28](file://client/src/router/index.tsx#L1-L28)
+- [client/src/layouts/BasicLayout/index.tsx:1-100](file://client/src/layouts/BasicLayout/index.tsx#L1-L100)
 
 ### JSX 结构分析
 
-组件的 JSX 结构体现了层次化的 DOM 元素组织：
+组件的 JSX 结构体现了现代化的路由管理理念：
 
-1. **外层容器**: `<div className="App">` 提供全局应用容器
-2. **头部区域**: `<header className="App-header">` 包含所有可见内容
-3. **Logo 图像**: `<img src={logo} className="App-logo" alt="logo" />`
-4. **文本内容**: `<p>Edit src/App.tsx and save to reload.</p>`
-5. **外部链接**: `<a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">Learn React</a>`
+1. **路由提供者**: `<RouterProvider router={router} />` 管理整个应用的路由
+2. **布局容器**: 通过 BasicLayout 组件实现统一的页面布局
+3. **页面渲染**: 使用 `<Outlet />` 实现嵌套路由的动态渲染
+4. **导航系统**: 集成 Ant Design 的菜单和导航组件
 
 **章节来源**
-- [src/App.tsx:6-23](file://src/App.tsx#L6-L23)
+- [client/src/App.tsx:5-7](file://client/src/App.tsx#L5-L7)
+- [client/src/router/index.tsx:9-25](file://client/src/router/index.tsx#L9-L25)
 
 ## 架构概览
 
@@ -138,18 +183,22 @@ participant Browser as 浏览器
 participant HTML as index.html
 participant ReactDOM as ReactDOM
 participant App as App 组件
-participant Styles as 样式系统
+participant Router as 路由系统
+participant Layout as 基础布局
+participant Dashboard as 仪表盘页面
 Browser->>HTML : 加载页面
 HTML->>ReactDOM : 创建根节点
 ReactDOM->>App : 渲染 App 组件
-App->>Styles : 应用 CSS 样式
-App->>Browser : 显示完整界面
-Note over Browser,Styles : 完成应用初始化
+App->>Router : 初始化路由系统
+Router->>Layout : 渲染基础布局
+Layout->>Dashboard : 显示默认页面
+Dashboard->>Browser : 显示完整界面
+Note over Browser,Dashboard : 完成应用初始化
 ```
 
 **图表来源**
-- [src/index.tsx:7-14](file://src/index.tsx#L7-L14)
-- [public/index.html:31](file://public/index.html#L31)
+- [client/src/index.tsx:7-12](file://client/src/index.tsx#L7-L12)
+- [client/public/index.html:32](file://client/public/index.html#L32)
 
 ### 组件依赖关系
 
@@ -158,33 +207,48 @@ graph LR
 subgraph "外部依赖"
 React[React 库]
 ReactDOM[React DOM]
+ReactRouter[React Router v6]
+AntDesign[Ant Design]
 WebVitals[Web Vitals]
 end
 subgraph "内部模块"
 AppTSX[App.tsx]
-AppCSS[App.css]
-LogoSVG[logo.svg]
-IndexTSX[index.tsx]
+RouterTSX[router/index.tsx]
+BasicLayout[layouts/BasicLayout/index.tsx]
+Dashboard[pages/Dashboard/index.tsx]
+Users[pages/Users/index.tsx]
+Questionnaire[pages/Questionnaire/index.tsx]
+Settings[pages/Settings/index.tsx]
+Login[pages/Login/index.tsx]
+NotFound[pages/NotFound/index.tsx]
 end
 subgraph "公共资源"
 PublicHTML[public/index.html]
 end
 React --> AppTSX
 ReactDOM --> IndexTSX
-WebVitals --> IndexTSX
-AppTSX --> AppCSS
-AppTSX --> LogoSVG
+ReactRouter --> RouterTSX
+AntDesign --> BasicLayout
+WebVitals --> ReportTS
+AppTSX --> RouterTSX
+RouterTSX --> BasicLayout
+BasicLayout --> Dashboard
+BasicLayout --> Users
+BasicLayout --> Questionnaire
+BasicLayout --> Settings
+BasicLayout --> Login
+BasicLayout --> NotFound
 IndexTSX --> AppTSX
-IndexTSX --> PublicHTML
+AppTSX --> PublicHTML
 ```
 
 **图表来源**
-- [src/App.tsx:1-3](file://src/App.tsx#L1-L3)
-- [src/index.tsx:1-5](file://src/index.tsx#L1-L5)
+- [client/src/App.tsx:1-3](file://client/src/App.tsx#L1-L3)
+- [client/src/index.tsx:1-5](file://client/src/index.tsx#L1-L5)
 
 **章节来源**
-- [src/index.tsx:1-20](file://src/index.tsx#L1-L20)
-- [package.json:5-18](file://package.json#L5-L18)
+- [client/src/index.tsx:1-18](file://client/src/index.tsx#L1-L18)
+- [package.json:18-22](file://package.json#L18-L22)
 
 ## 详细组件分析
 
@@ -192,66 +256,75 @@ IndexTSX --> PublicHTML
 
 #### 导入模块分析
 
-组件通过 ES6 模块系统导入必要的依赖：
+组件通过 ES6 模块系统导入了现代化的依赖：
 
-- **React 核心**: 提供组件功能和生命周期管理
-- **Logo 资源**: 通过相对路径导入 SVG 图标资源
+- **React Router**: 提供路由管理功能
+- **路由配置**: 引入完整的路由配置文件
 - **样式文件**: 集成 CSS 样式表以控制视觉外观
 
 #### 组件函数结构
 
 ```mermaid
 flowchart TD
-Start([组件函数开始]) --> ImportModules["导入 React<br/>导入 logo.svg<br/>导入 App.css"]
+Start([组件函数开始]) --> ImportModules["导入 React Router<br/>导入路由配置<br/>导入 App.css"]
 ImportModules --> DefineFunction["定义 App 函数组件"]
-DefineFunction --> CreateJSX["创建 JSX 元素树"]
-CreateJSX --> ReturnElement["返回 JSX 元素"]
+DefineFunction --> CreateRouterProvider["创建 RouterProvider 元素"]
+CreateRouterProvider --> ReturnElement["返回 RouterProvider 元素"]
 ReturnElement --> ExportDefault["导出默认组件"]
 ExportDefault --> End([组件函数结束])
 ```
 
 **图表来源**
-- [src/App.tsx:1-26](file://src/App.tsx#L1-L26)
+- [client/src/App.tsx:1-9](file://client/src/App.tsx#L1-L9)
 
-#### JSX 元素树结构
+#### 路由系统集成
 
-组件的 JSX 结构体现了清晰的层次关系：
+组件的核心功能是集成 React Router v6 的路由系统：
 
 ```mermaid
 graph TB
-AppDiv["App 容器<br/>.App"]
-Header["头部区域<br/>.App-header"]
-LogoImg["Logo 图像<br/>.App-logo"]
-TextP["文本段落<br/>编辑说明"]
-LinkA["外部链接<br/>.App-link"]
-AppDiv --> Header
-Header --> LogoImg
-Header --> TextP
-Header --> LinkA
+RouterProvider["RouterProvider 组件"]
+BrowserRouter["createBrowserRouter"]
+BasicLayout["BasicLayout 布局"]
+Dashboard["Dashboard 页面"]
+Users["Users 页面"]
+Questionnaire["Questionnaire 页面"]
+Settings["Settings 页面"]
+Login["Login 页面"]
+NotFound["NotFound 页面"]
+RouterProvider --> BrowserRouter
+BrowserRouter --> BasicLayout
+BrowserRouter --> Login
+BrowserRouter --> NotFound
+BasicLayout --> Dashboard
+BasicLayout --> Users
+BasicLayout --> Questionnaire
+BasicLayout --> Settings
 ```
 
 **图表来源**
-- [src/App.tsx:7-21](file://src/App.tsx#L7-L21)
+- [client/src/App.tsx:5-7](file://client/src/App.tsx#L5-L7)
+- [client/src/router/index.tsx:9-25](file://client/src/router/index.tsx#L9-L25)
 
 **章节来源**
-- [src/App.tsx:1-27](file://src/App.tsx#L1-L27)
+- [client/src/App.tsx:1-10](file://client/src/App.tsx#L1-L10)
 
 ### App.css 样式系统
 
 #### 样式分类与作用
 
-样式系统采用模块化设计，包含以下关键样式类：
+样式系统保持了原有的简洁设计，专注于基础的布局和动画效果：
 
 | 样式类 | 作用域 | 主要属性 |
 |--------|--------|----------|
 | `.App` | 全局应用容器 | 文本居中对齐 |
-| `.App-header` | 头部区域 | 背景颜色、Flex 布局、高度设置 |
 | `.App-logo` | Logo 图像 | 尺寸、动画、事件处理 |
+| `.App-header` | 头部区域 | 背景颜色、Flex 布局、高度设置 |
 | `.App-link` | 外部链接 | 颜色、视觉样式 |
 
 #### 动画系统实现
 
-组件实现了响应式动画效果：
+组件继续实现了响应式动画效果：
 
 ```mermaid
 stateDiagram-v2
@@ -267,21 +340,22 @@ end note
 ```
 
 **图表来源**
-- [src/App.css:10-14](file://src/App.css#L10-L14)
-- [src/App.css:31-38](file://src/App.css#L31-L38)
+- [client/src/App.css:10-14](file://client/src/App.css#L10-L14)
+- [client/src/App.css:31-38](file://client/src/App.css#L31-L38)
 
 **章节来源**
-- [src/App.css:1-39](file://src/App.css#L1-L39)
+- [client/src/App.css:1-39](file://client/src/App.css#L1-L39)
 
 ### 用户界面设计
 
 #### 视觉层次结构
 
-组件的 UI 设计遵循清晰的视觉层次：
+组件的 UI 设计通过 Ant Design 组件库实现了更丰富的视觉层次：
 
-1. **背景层**: 深色背景 (`#282c34`) 提供对比度
-2. **内容层**: 居中对齐的 Flex 布局
-3. **强调层**: 蓝色链接 (`#61dafb`) 提供视觉引导
+1. **侧边栏导航**: 深色主题的垂直导航菜单
+2. **主内容区**: 白色背景的内容区域
+3. **头部工具栏**: 右侧的用户下拉菜单
+4. **响应式布局**: 支持折叠展开的侧边栏
 
 #### 响应式设计
 
@@ -292,19 +366,21 @@ end note
 - **弹性布局**: Flexbox 实现自适应排列
 
 **章节来源**
-- [src/App.css:16-25](file://src/App.css#L16-L25)
+- [client/src/App.css:16-25](file://client/src/App.css#L16-L25)
 
 ## 依赖关系分析
 
 ### 外部依赖管理
 
-项目使用现代前端开发工具链：
+项目使用现代化的前端开发工具链：
 
 ```mermaid
 graph TB
 subgraph "运行时依赖"
 ReactRuntime[react ^19.2.6]
 ReactDOMRuntime[react-dom ^19.2.6]
+ReactRouterRuntime[react-router-dom ^6.26.1]
+AntDesignRuntime[antd ^5.21.2]
 TypesReact[@types/react ^19.2.14]
 TypesReactDom[@types/react-dom ^19.2.3]
 end
@@ -313,6 +389,8 @@ ReactScripts[react-scripts 5.0.1]
 TypeScript[typescript ^4.9.5]
 ESLint[eslint ^10.4.0]
 WebVitals[web-vitals ^2.1.4]
+AntDesignIcons[@ant-design/icons ^5.5.1]
+TailwindCSS[tailwindcss ^3.4.1]
 end
 subgraph "测试依赖"
 TestingLib[Testing Library]
@@ -320,13 +398,14 @@ Jest[Jest 框架]
 end
 ReactRuntime --> AppTSX
 ReactDOMRuntime --> IndexTSX
+ReactRouterRuntime --> RouterTSX
+AntDesignRuntime --> BasicLayout
 ReactScripts --> BuildProcess
 TypeScript --> TypeChecking
 ```
 
 **图表来源**
-- [package.json:5-18](file://package.json#L5-L18)
-- [package.json:45-53](file://package.json#L45-L53)
+- [package.json:18-22](file://package.json#L18-L22)
 
 ### 内部模块依赖
 
@@ -334,39 +413,50 @@ TypeScript --> TypeChecking
 graph LR
 subgraph "核心模块"
 AppTSX[App.tsx]
-AppCSS[App.css]
+RouterTSX[router/index.tsx]
 IndexTSX[index.tsx]
+BasicLayout[layouts/BasicLayout/index.tsx]
 end
-subgraph "资源文件"
-LogoSVG[logo.svg]
-IndexHTML[index.html]
+subgraph "页面模块"
+Dashboard[pages/Dashboard/index.tsx]
+Users[pages/Users/index.tsx]
+Questionnaire[pages/Questionnaire/index.tsx]
+Settings[pages/Settings/index.tsx]
+Login[pages/Login/index.tsx]
+NotFound[pages/NotFound/index.tsx]
 end
-subgraph "工具模块"
+subgraph "公共资源"
+PublicHTML[index.html]
 ReportTS[reportWebVitals.ts]
-IndexCSS[index.css]
 end
-AppTSX --> AppCSS
-AppTSX --> LogoSVG
+AppTSX --> RouterTSX
+RouterTSX --> BasicLayout
+BasicLayout --> Dashboard
+BasicLayout --> Users
+BasicLayout --> Questionnaire
+BasicLayout --> Settings
+BasicLayout --> Login
+BasicLayout --> NotFound
 IndexTSX --> AppTSX
-IndexTSX --> IndexHTML
+IndexTSX --> PublicHTML
 IndexTSX --> ReportTS
-AppTSX --> IndexCSS
 ```
 
 **图表来源**
-- [src/App.tsx:2-3](file://src/App.tsx#L2-L3)
-- [src/index.tsx:4](file://src/index.tsx#L4)
+- [client/src/App.tsx:1-3](file://client/src/App.tsx#L1-L3)
+- [client/src/index.tsx:4](file://client/src/index.tsx#L4)
 
 **章节来源**
-- [package.json:1-55](file://package.json#L1-L55)
+- [package.json:1-24](file://package.json#L1-L24)
 
 ## 性能考虑
 
 ### 渲染优化策略
 
-1. **最小化重渲染**: 函数组件避免不必要的状态更新
-2. **样式缓存**: CSS 类名复用减少样式计算开销
-3. **资源优化**: SVG 格式提供高质量缩放能力
+1. **路由懒加载**: React Router v6 支持自动的路由懒加载
+2. **组件分割**: 通过路由系统实现代码分割
+3. **样式缓存**: CSS 类名复用减少样式计算开销
+4. **动画优化**: 基于用户偏好的动画控制
 
 ### 性能监控
 
@@ -379,39 +469,39 @@ AppTSX --> IndexCSS
 - **TTFB**: 首字节到达时间
 
 **章节来源**
-- [src/reportWebVitals.ts:1-16](file://src/reportWebVitals.ts#L1-L16)
+- [client/src/reportWebVitals.ts:1-16](file://client/src/reportWebVitals.ts#L1-L16)
 
 ## 故障排除指南
 
 ### 常见问题诊断
 
-#### Logo 显示问题
+#### 路由不工作
 
-**症状**: Logo 不显示或显示为占位符
+**症状**: 页面无法正确导航或显示空白
 **可能原因**:
-- SVG 文件路径错误
-- 构建配置问题
-- 缓存问题
+- 路由配置错误
+- 组件导入路径问题
+- 路由依赖缺失
 
 **解决方案**:
-1. 验证 SVG 文件存在性
-2. 检查相对路径正确性
-3. 清除浏览器缓存
-4. 重新构建项目
+1. 验证路由配置文件的正确性
+2. 检查组件导入路径
+3. 确认 React Router 依赖已安装
+4. 使用浏览器开发者工具调试路由
 
-#### 样式不生效
+#### 布局显示异常
 
-**症状**: 样式未按预期显示
+**症状**: 侧边栏或头部显示不正确
 **可能原因**:
-- CSS 文件导入失败
-- 类名拼写错误
-- 样式优先级冲突
+- Ant Design 样式未正确加载
+- CSS 类名冲突
+- 组件依赖问题
 
 **解决方案**:
-1. 确认 CSS 文件正确导入
-2. 验证类名匹配
-3. 检查样式加载顺序
-4. 使用浏览器开发者工具调试
+1. 确认 Ant Design 已正确安装和配置
+2. 检查样式文件的导入顺序
+3. 验证组件依赖的完整性
+4. 清除浏览器缓存
 
 #### 动画效果异常
 
@@ -428,19 +518,20 @@ AppTSX --> IndexCSS
 4. 调整动画持续时间参数
 
 **章节来源**
-- [src/App.css:10-14](file://src/App.css#L10-L14)
+- [client/src/App.css:10-14](file://client/src/App.css#L10-L14)
 
 ## 结论
 
-App 组件作为 React 应用的核心入口点，成功地展示了现代前端开发的最佳实践。该组件通过简洁的 JSX 结构、模块化的样式管理和响应式设计原则，为开发者提供了一个清晰的学习模板。
+App 组件经过重构后，成功地从一个简单的静态页面演进为一个功能完整的后台管理系统入口。该组件通过现代化的路由系统、Ant Design UI 组件库和模块化的架构设计，为开发者提供了一个企业级应用的完整模板。
 
 组件的关键优势包括：
-- **清晰的架构**: 层次分明的 JSX 结构便于理解和维护
-- **现代化特性**: 集成 CSS 动画和响应式设计
-- **性能优化**: 最小化依赖和高效的渲染策略
-- **可扩展性**: 模块化设计支持功能扩展和定制
+- **现代化架构**: 基于 React Router v6 的路由系统
+- **企业级设计**: 集成 Ant Design 组件库
+- **模块化组织**: 清晰的功能模块划分
+- **性能优化**: 支持懒加载和代码分割
+- **可扩展性**: 易于添加新页面和功能
 
-对于初学者而言，App 组件提供了理解 React 组件开发的绝佳起点，涵盖了从基础 JSX 语法到高级样式集成的完整学习路径。
+对于初学者而言，App 组件提供了理解现代 React 应用开发的绝佳起点，涵盖了从基础路由管理到复杂 UI 组件集成的完整学习路径。
 
 ## 附录
 
@@ -461,10 +552,10 @@ root.render(
 
 #### 自定义选项
 
-1. **修改 Logo**: 替换 `src/logo.svg` 文件
-2. **调整样式**: 修改 `src/App.css` 中的样式规则
-3. **添加内容**: 在 `src/App.tsx` 中添加新的 JSX 元素
-4. **更改动画**: 调整 CSS 动画参数
+1. **添加新页面**: 在 `pages/` 目录下创建新组件
+2. **配置路由**: 在 `router/index.tsx` 中添加路由配置
+3. **修改布局**: 在 `layouts/BasicLayout/` 中调整布局
+4. **更新样式**: 在 `App.css` 中添加或修改样式规则
 
 ### 开发环境配置
 
@@ -476,11 +567,12 @@ root.render(
 
 #### 常用命令
 
-- `npm start`: 启动开发服务器
+- `npm start:client`: 启动客户端开发服务器
+- `npm start:server`: 启动服务端开发服务器
 - `npm run build`: 构建生产版本
 - `npm test`: 运行测试套件
 - `npm run lint`: 运行 ESLint 代码检查
 
 **章节来源**
-- [README.md:1-15](file://README.md#L1-L15)
-- [package.json:20-26](file://package.json#L20-L26)
+- [package.json:6-16](file://package.json#L6-L16)
+- [package.json:18-22](file://package.json#L18-L22)

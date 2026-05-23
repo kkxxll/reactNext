@@ -2,27 +2,31 @@
 
 <cite>
 **本文档引用的文件**
-- [tsconfig.json](file://tsconfig.json)
+- [client/tsconfig.json](file://client/tsconfig.json)
+- [client/package.json](file://client/package.json)
+- [client/src/react-app-env.d.ts](file://client/src/react-app-env.d.ts)
+- [client/eslint.config.mjs](file://client/eslint.config.mjs)
+- [client/src/index.tsx](file://client/src/index.tsx)
+- [client/src/App.tsx](file://client/src/App.tsx)
+- [client/src/router/index.tsx](file://client/src/router/index.tsx)
+- [client/src/services/questionnaire.ts](file://client/src/services/questionnaire.ts)
+- [client/src/mocks/questionnaire.ts](file://client/src/mocks/questionnaire.ts)
+- [client/src/layouts/BasicLayout/index.tsx](file://client/src/layouts/BasicLayout/index.tsx)
+- [client/src/setupTests.ts](file://client/src/setupTests.ts)
+- [client/craco.config.js](file://client/craco.config.js)
 - [package.json](file://package.json)
-- [src/react-app-env.d.ts](file://src/react-app-env.d.ts)
-- [eslint.config.mjs](file://eslint.config.mjs)
-- [src/index.tsx](file://src/index.tsx)
-- [src/App.tsx](file://src/App.tsx)
-- [src/router/index.tsx](file://src/router/index.tsx)
-- [src/services/questionnaire.ts](file://src/services/questionnaire.ts)
-- [src/mocks/questionnaire.ts](file://src/mocks/questionnaire.ts)
-- [src/layouts/BasicLayout/index.tsx](file://src/layouts/BasicLayout/index.tsx)
-- [src/setupTests.ts](file://src/setupTests.ts)
 - [README.md](file://README.md)
 </cite>
 
 ## 更新摘要
 **变更内容**
+- TypeScript 配置从项目根目录迁移至 client 目录下的 client/tsconfig.json
 - 增强了 TypeScript 严格模式配置，提升了类型检查的全面性
 - 扩展了类型定义文件管理，包括第三方库类型支持
 - 完善了开发工具链集成，包括 ESLint 和 Prettier 配置
 - 优化了模块解析和 JSX 处理配置
 - 增强了测试环境的类型支持
+- 新增了 Craco 配置以支持路径别名和代理设置
 
 ## 目录
 1. [简介](#简介)
@@ -38,9 +42,9 @@
 
 ## 简介
 
-本文件为 React + TypeScript 项目的 TypeScript 编译配置综合文档。该配置基于 Create React App 的默认 TypeScript 设置，专注于解释 tsconfig.json 中的各项编译选项及其对开发体验和代码质量的影响。文档涵盖类型检查、模块解析、输出目标等关键配置，并提供最佳实践建议和常见配置场景。
+本文件为 React + TypeScript 项目的 TypeScript 编译配置综合文档。该配置基于 Create React App 的默认 TypeScript 设置，专注于解释 client/tsconfig.json 中的各项编译选项及其对开发体验和代码质量的影响。文档涵盖类型检查、模块解析、输出目标等关键配置，并提供最佳实践建议和常见配置场景。
 
-**更新** 本项目采用了增强的严格模式配置，包括完整的类型检查选项和更严格的代码约束，为 React 应用提供了高质量的开发体验。
+**重要更新** 本项目采用了增强的严格模式配置，包括完整的类型检查选项和更严格的代码约束，为 React 应用提供了高质量的开发体验。配置现已迁移至 client 目录，与 Craco 构建工具协同工作。
 
 ## 项目结构
 
@@ -49,10 +53,15 @@
 ```mermaid
 graph TB
 subgraph "项目根目录"
-TS["tsconfig.json<br/>TypeScript 编译配置"]
 PKG["package.json<br/>依赖和脚本配置"]
-ESL["eslint.config.mjs<br/>ESLint 配置"]
+MONO["多包管理配置"]
 README["README.md<br/>项目说明"]
+end
+subgraph "客户端目录 (client)"
+TS["tsconfig.json<br/>TypeScript 编译配置"]
+PKG2["package.json<br/>客户端依赖和脚本配置"]
+ESL["eslint.config.mjs<br/>ESLint 配置"]
+CRACO["craco.config.js<br/>Craco 构建配置"]
 SETUP["src/setupTests.ts<br/>测试环境配置"]
 end
 subgraph "源代码目录"
@@ -66,8 +75,9 @@ MOCKS["mocks/<br/>模拟数据"]
 ENV["react-app-env.d.ts<br/>环境类型声明"]
 end
 TS --> SRC
-PKG --> SRC
+PKG2 --> SRC
 ESL --> SRC
+CRACO --> SRC
 SETUP --> SRC
 SRC --> IDX
 SRC --> APP
@@ -79,14 +89,16 @@ SRC --> ENV
 ```
 
 **图表来源**
-- [tsconfig.json:1-27](file://tsconfig.json#L1-L27)
-- [package.json:1-84](file://package.json#L1-L84)
-- [src/react-app-env.d.ts:1-2](file://src/react-app-env.d.ts#L1-L2)
-- [src/setupTests.ts:1-6](file://src/setupTests.ts#L1-L6)
+- [client/tsconfig.json:1-31](file://client/tsconfig.json#L1-L31)
+- [client/package.json:1-81](file://client/package.json#L1-L81)
+- [client/src/react-app-env.d.ts:1-2](file://client/src/react-app-env.d.ts#L1-L2)
+- [client/src/setupTests.ts:1-6](file://client/src/setupTests.ts#L1-L6)
+- [package.json:1-24](file://package.json#L1-L24)
 
 **章节来源**
-- [tsconfig.json:1-27](file://tsconfig.json#L1-L27)
-- [package.json:1-84](file://package.json#L1-L84)
+- [client/tsconfig.json:1-31](file://client/tsconfig.json#L1-L31)
+- [client/package.json:1-81](file://client/package.json#L1-L81)
+- [package.json:1-24](file://package.json#L1-L24)
 - [README.md:1-15](file://README.md#L1-L15)
 
 ## 核心组件
@@ -95,10 +107,10 @@ SRC --> ENV
 
 该配置文件定义了 TypeScript 编译器的核心行为，采用严格模式以确保高质量的代码输出。配置包含了完整的类型检查选项，包括严格模式、文件名大小写一致性检查和 switch 语句的无遗漏检查。
 
-**更新** 配置采用了全面的严格模式设置，确保代码质量和运行时稳定性。
+**重要更新** 配置现已迁移至 client 目录，并新增了 baseUrl 和路径映射配置，支持 @ 符号的路径别名。
 
 **章节来源**
-- [tsconfig.json:2-26](file://tsconfig.json#L2-L26)
+- [client/tsconfig.json:2-26](file://client/tsconfig.json#L2-L26)
 
 ### 类型声明管理
 
@@ -109,14 +121,14 @@ SRC --> ENV
 - 环境类型声明：通过 react-app-env.d.ts 提供 React Scripts 的类型支持
 - 第三方库类型：通过 @types 包提供完整的第三方库类型定义
 
-**更新** 类型声明管理更加完善，涵盖了服务层、布局组件、路由配置等多个层面的类型定义。
+**重要更新** 类型声明管理更加完善，涵盖了服务层、布局组件、路由配置等多个层面的类型定义，支持路径别名导入。
 
 **章节来源**
-- [src/react-app-env.d.ts:1-2](file://src/react-app-env.d.ts#L1-L2)
-- [src/index.tsx:1-18](file://src/index.tsx#L1-L18)
-- [src/App.tsx:1-10](file://src/App.tsx#L1-L10)
-- [src/services/questionnaire.ts:11-17](file://src/services/questionnaire.ts#L11-L17)
-- [src/mocks/questionnaire.ts:9-25](file://src/mocks/questionnaire.ts#L9-L25)
+- [client/src/react-app-env.d.ts:1-2](file://client/src/react-app-env.d.ts#L1-L2)
+- [client/src/index.tsx:1-18](file://client/src/index.tsx#L1-L18)
+- [client/src/App.tsx:1-10](file://client/src/App.tsx#L1-L10)
+- [client/src/services/questionnaire.ts:11-17](file://client/src/services/questionnaire.ts#L11-L17)
+- [client/src/mocks/questionnaire.ts:9-25](file://client/src/mocks/questionnaire.ts#L9-L25)
 
 ### 开发工具链集成
 
@@ -127,13 +139,15 @@ SRC --> ENV
 - React ESLint 插件：React 特定的代码检查规则
 - Prettier：代码格式化工具
 - 测试环境：Jest DOM 扩展的类型支持
+- Craco：Create React App 的配置扩展工具
 
-**更新** 开发工具链配置更加现代化，采用了 flat 配置格式和推荐的插件组合。
+**重要更新** 开发工具链配置更加现代化，采用了 flat 配置格式和推荐的插件组合，同时集成了 Craco 以支持路径别名和代理设置。
 
 **章节来源**
-- [eslint.config.mjs:1-33](file://eslint.config.mjs#L1-L33)
-- [package.json:26-36](file://package.json#L26-L36)
-- [src/setupTests.ts:1-6](file://src/setupTests.ts#L1-L6)
+- [client/eslint.config.mjs:1-33](file://client/eslint.config.mjs#L1-L33)
+- [client/package.json:27-35](file://client/package.json#L27-L35)
+- [client/src/setupTests.ts:1-6](file://client/src/setupTests.ts#L1-L6)
+- [client/craco.config.js:1-37](file://client/craco.config.js#L1-L37)
 
 ## 架构概览
 
@@ -144,6 +158,8 @@ graph TB
 subgraph "编译配置层"
 COMP["compilerOptions<br/>编译器选项"]
 INC["include<br/>包含路径"]
+BASE["baseUrl<br/>基础路径"]
+PATHS["paths<br/>路径映射"]
 end
 subgraph "类型系统层"
 STRICT["strict<br/>严格模式"]
@@ -157,13 +173,15 @@ MOD["module<br/>模块格式"]
 RES["moduleResolution<br/>模块解析"]
 ES["esModuleInterop<br/>ES 模块互操作"]
 JSON["resolveJsonModule<br/>JSON 模块解析"]
-end
+ISOLATED["isolatedModules<br/>隔离模块"]
+NOEMIT["noEmit<br/>不输出文件"]
+END
 subgraph "开发体验层"
-PERF["noEmit<br/>仅类型检查"]
-DEV["isolatedModules<br/>隔离模块"]
 ALLOW["allowJs<br/>允许 JavaScript"]
 SKIP["skipLibCheck<br/>跳过库检查"]
 SYNTH["allowSyntheticDefaultImports<br/>合成默认导入"]
+PERF["性能优化"]
+DEV["开发工具集成"]
 end
 COMP --> STRICT
 COMP --> LIB
@@ -174,22 +192,26 @@ COMP --> MOD
 COMP --> RES
 COMP --> ES
 COMP --> JSON
-COMP --> PERF
-COMP --> DEV
+COMP --> ISOLATED
+COMP --> NOEMIT
 COMP --> ALLOW
 COMP --> SKIP
 COMP --> SYNTH
+BASE --> PATHS
+COMP --> BASE
+COMP --> PATHS
 ```
 
 **图表来源**
-- [tsconfig.json:2-26](file://tsconfig.json#L2-L26)
-- [eslint.config.mjs:1-33](file://eslint.config.mjs#L1-L33)
+- [client/tsconfig.json:2-26](file://client/tsconfig.json#L2-L26)
+- [client/eslint.config.mjs:1-33](file://client/eslint.config.mjs#L1-L33)
+- [client/craco.config.js:9-15](file://client/craco.config.js#L9-L15)
 
 ## 详细组件分析
 
 ### 编译器选项详解
 
-#### 目标平台配置
+#### 基础配置
 - **target**: es5
   - 影响：生成兼容旧版浏览器的 JavaScript 代码
   - 影响范围：语法转换、polyfill 需求
@@ -201,7 +223,7 @@ COMP --> SYNTH
   - 适用场景：Web 应用开发
 
 **章节来源**
-- [tsconfig.json:3-8](file://tsconfig.json#L3-L8)
+- [client/tsconfig.json:3-8](file://client/tsconfig.json#L3-L8)
 
 #### 严格模式配置
 - **strict**: true
@@ -217,10 +239,10 @@ COMP --> SYNTH
   - 影响：防止 switch 语句中的意外 fallthrough
   - 安全性：提高代码安全性
 
-**更新** 严格模式配置更加全面，确保了代码的健壮性和可维护性。
+**重要更新** 严格模式配置更加全面，确保了代码的健壮性和可维护性。
 
 **章节来源**
-- [tsconfig.json:13-15](file://tsconfig.json#L13-L15)
+- [client/tsconfig.json:13-15](file://client/tsconfig.json#L13-L15)
 
 #### 模块系统配置
 - **module**: "esnext"
@@ -236,7 +258,21 @@ COMP --> SYNTH
   - 实用性：简化第三方库导入
 
 **章节来源**
-- [tsconfig.json:16-12](file://tsconfig.json#L16-L12)
+- [client/tsconfig.json:16-18](file://client/tsconfig.json#L16-L18)
+
+#### 路径别名配置
+- **baseUrl**: "src"
+  - 影响：设置相对路径的基础目录
+  - 实用性：简化模块导入路径
+
+- **paths**: {"@/*": ["*"]}
+  - 影响：配置 @ 符号的路径别名
+  - 实用性：支持统一的模块导入语法
+
+**重要更新** 新增的路径别名配置与 Craco 配置协同工作，提供更好的开发体验。
+
+**章节来源**
+- [client/tsconfig.json:22-25](file://client/tsconfig.json#L22-L25)
 
 #### JSX 和 JSON 处理
 - **jsx**: "react-jsx"
@@ -248,7 +284,7 @@ COMP --> SYNTH
   - 实用性：配置文件和数据文件的类型安全导入
 
 **章节来源**
-- [tsconfig.json:21-18](file://tsconfig.json#L21-L18)
+- [client/tsconfig.json:21](file://client/tsconfig.json#L21)
 
 #### 开发体验优化
 - **allowJs**: true
@@ -264,19 +300,19 @@ COMP --> SYNTH
   - 兼容性：改善第三方库的导入体验
 
 **章节来源**
-- [tsconfig.json:9-11](file://tsconfig.json#L9-L11)
+- [client/tsconfig.json:9-12](file://client/tsconfig.json#L9-L12)
 
 #### 输出和构建配置
 - **noEmit**: true
   - 影响：仅进行类型检查，不生成 JavaScript 文件
-  - 工作流：与 React Scripts 协作，由构建工具处理输出
+  - 工作流：与 Craco 和 React Scripts 协作，由构建工具处理输出
 
 - **isolatedModules**: true
   - 影响：确保每个文件都可以独立编译
   - 工具链：支持热重载和快速反馈
 
 **章节来源**
-- [tsconfig.json:20-19](file://tsconfig.json#L20-L19)
+- [client/tsconfig.json:19-20](file://client/tsconfig.json#L19-L20)
 
 ### 类型定义文件管理
 
@@ -294,7 +330,7 @@ CHECK --> END["完成"]
 ```
 
 **图表来源**
-- [src/react-app-env.d.ts:1-2](file://src/react-app-env.d.ts#L1-L2)
+- [client/src/react-app-env.d.ts:1-2](file://client/src/react-app-env.d.ts#L1-L2)
 
 #### 第三方库类型支持
 项目通过 package.json 管理第三方库的类型定义：
@@ -305,12 +341,12 @@ CHECK --> END["完成"]
 - **@types/jest**: 测试框架类型
 - **@types/mockjs**: Mock 数据库类型
 
-**更新** 第三方库类型支持更加完善，涵盖了项目中使用的各种依赖库。
+**重要更新** 第三方库类型支持更加完善，涵盖了项目中使用的各种依赖库。
 
 **章节来源**
-- [package.json:10-14](file://package.json#L10-L14)
-- [src/services/questionnaire.ts:12-17](file://src/services/questionnaire.ts#L12-L17)
-- [src/mocks/questionnaire.ts:7](file://src/mocks/questionnaire.ts#L7)
+- [client/package.json:10-25](file://client/package.json#L10-L25)
+- [client/src/services/questionnaire.ts:12-17](file://client/src/services/questionnaire.ts#L12-L17)
+- [client/src/mocks/questionnaire.ts:7](file://client/src/mocks/questionnaire.ts#L7)
 
 ### 开发工具链集成
 
@@ -331,12 +367,33 @@ ESL->>Dev : 输出报告
 ```
 
 **图表来源**
-- [eslint.config.mjs:1-33](file://eslint.config.mjs#L1-L33)
+- [client/eslint.config.mjs:1-33](file://client/eslint.config.mjs#L1-L33)
 
-**更新** ESLint 配置采用了现代化的 flat 配置格式，提供了更好的可维护性和扩展性。
+**重要更新** ESLint 配置采用了现代化的 flat 配置格式，提供了更好的可维护性和扩展性。
 
 **章节来源**
-- [eslint.config.mjs:7-32](file://eslint.config.mjs#L7-L32)
+- [client/eslint.config.mjs:7-32](file://client/eslint.config.mjs#L7-L32)
+
+#### Craco 配置分析
+项目使用 Craco 来扩展 Create React App 的配置：
+
+```mermaid
+flowchart LR
+CRACO["craco.config.js"] --> WEBPACK["webpack 别名配置"]
+CRACO --> DEVSERVER["开发服务器代理"]
+CRACO --> JEST["Jest 路径映射"]
+WEBPACK --> ALIAS["@ 符号别名"]
+DEVSERVER --> PROXY["/api 代理到后端"]
+JEST --> TESTALIAS["测试环境路径映射"]
+```
+
+**图表来源**
+- [client/craco.config.js:9-36](file://client/craco.config.js#L9-L36)
+
+**重要更新** Craco 配置支持路径别名和开发服务器代理，与 TypeScript 路径配置协同工作。
+
+**章节来源**
+- [client/craco.config.js:9-36](file://client/craco.config.js#L9-L36)
 
 ## 依赖关系分析
 
@@ -347,6 +404,7 @@ graph TB
 subgraph "核心依赖"
 TS["typescript@^4.9.5"]
 CRA["react-scripts@5.0.1"]
+CRACO["craco@7.1.0"]
 END
 subgraph "类型定义"
 TReact["@types/react@^19.2.14"]
@@ -360,6 +418,7 @@ ESL["eslint@^8.57.1"]
 TSESL["@typescript-eslint/eslint-plugin@^8.59.3"]
 REACTPL["eslint-plugin-react@^7.37.5"]
 PRETTIER["eslint-plugin-prettier@^5.5.5"]
+PRETTIER2["prettier@^3.8.3"]
 end
 TS --> TReact
 TS --> TDOM
@@ -367,14 +426,16 @@ TS --> TNode
 TS --> TJest
 TS --> TMock
 CRA --> TS
+CRACO --> CRA
 ESL --> TSESL
 ESL --> REACTPL
 ESL --> PRETTIER
+PRETTIER2 --> ESL
 ```
 
 **图表来源**
-- [package.json:5-24](file://package.json#L5-L24)
-- [package.json:55-73](file://package.json#L55-L73)
+- [client/package.json:5-25](file://client/package.json#L5-L25)
+- [client/package.json:54-71](file://client/package.json#L54-L71)
 
 ### 配置文件间的关系
 
@@ -382,23 +443,30 @@ TypeScript 配置与项目其他配置文件的协同工作：
 
 ```mermaid
 flowchart LR
-TS["tsconfig.json"] --> COMP["编译器选项"]
+TS["client/tsconfig.json"] --> COMP["编译器选项"]
 TS --> INC["包含路径"]
+TS --> BASE["baseUrl"]
+TS --> PATHS["paths"]
 COMP --> STRICT["严格模式"]
 COMP --> MOD["模块系统"]
 COMP --> JSX["JSX 处理"]
 INC --> SRC["src 目录"]
+BASE --> CRACO["Craco 配置"]
+PATHS --> CRACO
 STR["strict: true"] --> LINT["ESLint 集成"]
 MOD --> BUILD["构建工具"]
 JSX --> RUNTIME["运行时"]
+CRACO --> ALIAS["@ 符号别名"]
+CRACO --> PROXY["API 代理"]
 ```
 
 **图表来源**
-- [tsconfig.json:2-26](file://tsconfig.json#L2-L26)
-- [eslint.config.mjs:1-33](file://eslint.config.mjs#L1-L33)
+- [client/tsconfig.json:2-26](file://client/tsconfig.json#L2-L26)
+- [client/eslint.config.mjs:1-33](file://client/eslint.config.mjs#L1-L33)
+- [client/craco.config.js:9-36](file://client/craco.config.js#L9-L36)
 
 **章节来源**
-- [package.json:1-84](file://package.json#L1-L84)
+- [client/package.json:1-81](file://client/package.json#L1-L81)
 
 ## 性能考虑
 
@@ -411,12 +479,14 @@ JSX --> RUNTIME["运行时"]
 - **isolatedModules: true**：支持快速增量编译
 - **noEmit: true**：避免不必要的文件输出开销
 - **allowJs: true**：允许 JavaScript 和 TypeScript 混合开发
+- **baseUrl + paths**：优化模块解析性能
 
 #### 潜在优化点
 - **target: es5** 可能限制某些现代 JavaScript 特性的使用
 - **lib** 数组可以按需调整以减少类型定义加载
+- **Craco 配置** 可以进一步优化构建性能
 
-**更新** 性能优化配置在保证类型安全的同时，最大化了开发效率。
+**重要更新** 性能优化配置在保证类型安全的同时，最大化了开发效率。
 
 ### 开发体验优化
 
@@ -425,13 +495,15 @@ JSX --> RUNTIME["运行时"]
 - 严格类型检查在开发阶段提供早期错误检测
 - ESLint 集成提供实时代码质量反馈
 - Prettier 自动格式化提升代码一致性
+- Craco 支持路径别名，简化模块导入
 
 #### 工具链协同
 - TypeScript 与 ESLint 的深度集成
-- React Scripts 自动化处理编译和构建流程
+- Craco 自动化处理编译和构建流程
 - 测试环境的完整类型支持
+- 开发服务器代理简化 API 调用
 
-**更新** 开发工具链的协同工作为开发者提供了流畅的开发体验。
+**重要更新** 开发工具链的协同工作为开发者提供了流畅的开发体验。
 
 ## 故障排除指南
 
@@ -444,14 +516,16 @@ JSX --> RUNTIME["运行时"]
 2. 确认第三方库的类型定义已正确安装
 3. 验证环境类型声明文件的存在
 4. 检查类型定义文件的导入路径
+5. 确认 baseUrl 和路径映射配置正确
 
 #### 模块解析错误
 **症状**：无法找到模块或类型定义
 **解决方案**：
-1. 检查 module 和 moduleResolution 配置
+1. 检查 baseUrl 和 paths 配置
 2. 确认 node_modules 的完整性
 3. 验证路径映射配置
 4. 检查 package.json 中的类型定义
+5. 确认 Craco 路径别名配置与 TypeScript 配置一致
 
 #### JSX 处理问题
 **症状**：JSX 语法被识别为错误
@@ -469,7 +543,15 @@ JSX --> RUNTIME["运行时"]
 3. 使用类型断言解决特定场景
 4. 检查现有代码的类型安全性
 
-**更新** 严格模式相关的故障排除指南更加完善，帮助开发者逐步适应更严格的类型检查。
+#### 路径别名问题
+**症状**：@ 符号导入失败
+**解决方案**：
+1. 检查 baseUrl 和 paths 配置
+2. 确认 Craco 配置中的路径映射
+3. 验证 Jest 配置中的模块映射
+4. 检查 IDE 的 TypeScript 配置
+
+**重要更新** 严格模式相关的故障排除指南更加完善，帮助开发者逐步适应更严格的类型检查。
 
 ### 调试技巧
 
@@ -486,7 +568,7 @@ JSX --> RUNTIME["运行时"]
 - 使用 `--build --dry` 预览构建过程
 
 **章节来源**
-- [tsconfig.json:13-20](file://tsconfig.json#L13-L20)
+- [client/tsconfig.json:13-20](file://client/tsconfig.json#L13-L20)
 
 ## 结论
 
@@ -498,8 +580,10 @@ JSX --> RUNTIME["运行时"]
 - **完善的工具链集成**提升开发效率
 - **性能优化配置**平衡编译速度和功能需求
 - **全面的类型支持**涵盖项目各个层面
+- **路径别名支持**简化模块导入
+- **Craco 集成**提供灵活的配置扩展
 
-**更新** 本项目在原有配置基础上进一步增强了严格模式和类型检查支持，为大型 React 应用提供了坚实的技术基础。
+**重要更新** 本项目在原有配置基础上进一步增强了严格模式和类型检查支持，为大型 React 应用提供了坚实的技术基础。配置迁移至 client 目录并与 Craco 工具链深度集成，为开发者提供了更好的开发体验。
 
 ### 适用场景
 该配置特别适合：
@@ -507,6 +591,7 @@ JSX --> RUNTIME["运行时"]
 - 追求良好开发体验的团队协作
 - 需要与现有工具链无缝集成的项目
 - 需要现代化开发工具链支持的项目
+- 需要路径别名和代理配置的企业级应用
 
 ## 附录
 
@@ -517,8 +602,10 @@ JSX --> RUNTIME["运行时"]
 - 按需配置 lib 数组，避免不必要的类型定义加载
 - 使用 isolatedModules 支持现代开发工具
 - 合理配置 target 以平衡兼容性和功能
+- 配置 baseUrl 和路径映射以支持别名导入
+- 确保 TypeScript 配置与 Craco 配置一致
 
-**更新** 在严格模式下，建议逐步启用更严格的类型检查选项，确保代码质量。
+**重要更新** 在严格模式下，建议逐步启用更严格的类型检查选项，确保代码质量。
 
 #### 代码层面
 - 优先使用显式类型注解而非隐式推断
@@ -526,8 +613,9 @@ JSX --> RUNTIME["运行时"]
 - 定期更新类型定义文件
 - 实施统一的命名约定
 - 在服务层和数据层使用接口定义
+- 使用 @ 符号路径别名简化导入
 
-**更新** 服务层和数据层的类型定义尤为重要，建议使用接口和类型别名来明确数据结构。
+**重要更新** 服务层和数据层的类型定义尤为重要，建议使用接口和类型别名来明确数据结构。
 
 #### 工具层面
 - 集成 ESLint 和 TypeScript ESLint 插件
@@ -535,8 +623,9 @@ JSX --> RUNTIME["运行时"]
 - 建立持续集成中的类型检查流程
 - 使用 Prettier 进行代码格式化
 - 配置 Husky 和 lint-staged 进行预提交检查
+- 使用 Craco 进行构建配置扩展
 
-**更新** 开发工具链的配置更加完善，建议使用现代化的 flat 配置格式。
+**重要更新** 开发工具链的配置更加完善，建议使用现代化的 flat 配置格式。
 
 ### 常见配置场景
 
@@ -555,23 +644,32 @@ JSX --> RUNTIME["运行时"]
     "allowJs": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
-  }
+    "jsx": "react-jsx",
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["*"]
+    }
+  },
+  "include": ["src"]
 }
 ```
 
-**更新** 新项目可以参考这个配置模板，根据具体需求进行调整。
+**重要更新** 新项目可以参考这个配置模板，根据具体需求进行调整。
 
 #### 迁移策略
 - 从 JavaScript 渐进式迁移到 TypeScript
 - 逐步启用更严格的类型检查选项
 - 保持向后兼容性的同时改进类型安全
 - 使用类型断言处理过渡期的类型问题
+- 配置路径别名以支持模块导入
+- 集成 Craco 以扩展构建配置
 
 #### 团队协作
 - 统一的 TypeScript 配置标准
 - 详细的类型定义规范
 - 定期的工具链版本更新
 - 建立类型检查的 CI/CD 流程
+- 确保所有开发者使用相同的 IDE 设置
+- 维护一致的代码风格和格式化规则
 
-**更新** 团队协作中建议建立标准化的类型检查流程，确保代码质量的一致性。
+**重要更新** 团队协作中建议建立标准化的类型检查流程，确保代码质量的一致性。
